@@ -1,0 +1,19 @@
+flowchart TD
+    User[Usuario<br>con JWT] -->|1. Envía| Content[Contenido Original<br>+ Metadatos]
+    
+    subgraph SS [Fuente: SourceSeal]
+        A[Servidor Backend] -->|2. Genera| B[Sello Inmutable<br>ID_Sello + Hash Criptográfico]
+        A -->|3. Calcula| C[Prueba ZKP<br>Groth16 proof]
+        B --> D[(Base de Datos<br>Almacena Solo Datos del Sello)]
+        C --> D
+    end
+
+    D -->|4. Devuelve al Usuario| E[Recibo Digital<br>ID_Sello + ZKP Proof]
+    
+    E --> F{Acceso a Datos}
+    F -->|Usuario| G[Dashboard Transparente<br>Ve el uso de sus datos]
+    F -->|Fiscalía/Policía<br>con Proceso Jurídico| H[Acceso Especial<br>Solo Contenido Original Sellado]
+    
+    User -->|Intento de Falso Positivo| I[Sistema Enforcement]
+    I --> J[Detecta Patrón Anómalo]
+    J --> K[Activa Bloqueo<br>e Impide Alteración]
